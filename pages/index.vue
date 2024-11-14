@@ -9,7 +9,7 @@ interface Data {
   user: User;
 }
 
-const formData = reactive({
+const createFormData = reactive({
   title: "",
   description: "",
   is_finished: false,
@@ -26,7 +26,7 @@ async function handleCreate() {
   const { status } = await useFetch("http://localhost:3000/users/1/todos", {
     method: "POST",
     // ユーザーの情報はurlからとる
-    body: formData,
+    body: createFormData,
   });
   if (status.value === "success") {
     refresh();
@@ -41,37 +41,62 @@ async function handleCreate() {
   <div v-if="data">
     <h1 v-if="data.user">{{ data.user.name }}のTodo一覧</h1>
     <div>{{ message }}</div>
-    <div v-if="data.unfinished_todos.length > 0">
+    <div>
       <h2>未完了のTodo</h2>
-      <ul>
-        <li v-for="todo in data.unfinished_todos" :key="todo.id">
-          <h3>{{ todo.title }}</h3>
-          <p>{{ todo.description }}</p>
-        </li>
-      </ul>
+      <div v-if="data.unfinished_todos.length > 0">
+        <ul>
+          <user
+            v-for="todo in data.unfinished_todos"
+            :key="todo.id"
+            :id="todo.id"
+            :title="todo.title"
+            :description="todo.description"
+            :user_id="todo.user_id"
+            :is_finished="todo.is_finished"
+            :refresh="refresh"
+          >
+          </user>
+        </ul>
+      </div>
+      <div v-else>何もありません</div>
     </div>
-    <div v-else>何もありません</div>
-    <div v-if="data.finished_todos.length > 0">
+    <div>
       <h2>完了済みのTodo</h2>
-      <ul>
-        <li v-for="todo in data.finished_todos" :key="todo.id">
-          <h3>{{ todo.title }}</h3>
-          <p>{{ todo.description }}</p>
-        </li>
-      </ul>
+      <div v-if="data.finished_todos.length > 0">
+        <ul>
+          <user
+            v-for="todo in data.finished_todos"
+            :key="todo.id"
+            :id="todo.id"
+            :title="todo.title"
+            :description="todo.description"
+            :user_id="todo.user_id"
+            :is_finished="todo.is_finished"
+            :refresh="refresh"
+          >
+          </user>
+        </ul>
+      </div>
+      <div v-else>何もありません</div>
     </div>
-    <div v-else>何もありません</div>
   </div>
   <form v-on:submit.prevent="handleCreate">
     <input
       type="text"
       placeholder="タイトル"
-      v-model="formData.title"
+      v-model="createFormData.title"
       required
     />
-    <textarea placeholder="内容" v-model="formData.description"></textarea>
+    <textarea
+      placeholder="内容"
+      v-model="createFormData.description"
+    ></textarea>
     <label>完了済</label>
-    <input type="checkbox" name="checkbox" v-model="formData.is_finished" />
+    <input
+      type="checkbox"
+      name="checkbox"
+      v-model="createFormData.is_finished"
+    />
     <button type="submit">作成</button>
   </form>
 </template>
