@@ -24,27 +24,16 @@ const { flashMessage, isOpen } = flashState;
 </template>
 
 <style scoped>
-.flash-message {
-  position: fixed;
-  top: 20px;
-  right: 0;
-  left: 0;
-  margin: auto;
-  width: 90%;
-  max-width: 1024px;
-  display: flex;
-  justify-content: center;
-  z-index: 1000;
-}
-
 .message {
-  padding: 10px 30px;
+  padding: 10px;
   color: #ffffff;
   font-size: 20px;
   text-align: center;
   border-radius: 8px;
   background-color: #333333;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 50%;
+  margin: 0 auto; /* 左右中央寄せ */
 }
 
 .fade-enter-active,

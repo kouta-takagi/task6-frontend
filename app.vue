@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// フラッシュメッセージの機能をprovideし、templateでそのuiを読み込んでいる
 const flashMessage = ref("");
 const isOpen = ref(false);
 function flash(message) {
