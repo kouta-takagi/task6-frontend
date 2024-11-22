@@ -2,6 +2,12 @@
 import type { Todo } from "@/types/todo";
 import type { User } from "@/types/user";
 
+definePageMeta({
+  middleware: ["check-login"],
+});
+
+const flash = inject("flash");
+
 // レスポンス用の型定義
 interface Data {
   finished_todos: Todo[];
@@ -18,7 +24,7 @@ const createFormData = reactive({
 const message = ref("");
 
 // useFetch でデータを取得し、型を指定。
-const { data, refresh, clear } = await useFetch<Data | null>(
+const { data, refresh } = await useFetch<Data | null>(
   `http://localhost:3000/users/1/todos`
 );
 
@@ -30,9 +36,9 @@ async function handleCreate() {
   });
   if (status.value === "success") {
     refresh();
-    message.value = "新しいTodoを作成しました";
+    flash("Todoの作成が完了しました");
   } else {
-    message.value = "Todoの作成に失敗しました";
+    flash("Todoの作成に失敗しました");
   }
 }
 </script>
@@ -45,7 +51,7 @@ async function handleCreate() {
       <h2>未完了のTodo</h2>
       <div v-if="data.unfinished_todos.length > 0">
         <ul>
-          <user
+          <todo
             v-for="todo in data.unfinished_todos"
             :key="todo.id"
             :id="todo.id"
@@ -55,7 +61,7 @@ async function handleCreate() {
             :is_finished="todo.is_finished"
             :refresh="refresh"
           >
-          </user>
+          </todo>
         </ul>
       </div>
       <div v-else>何もありません</div>
@@ -64,7 +70,7 @@ async function handleCreate() {
       <h2>完了済みのTodo</h2>
       <div v-if="data.finished_todos.length > 0">
         <ul>
-          <user
+          <todo
             v-for="todo in data.finished_todos"
             :key="todo.id"
             :id="todo.id"
@@ -74,7 +80,7 @@ async function handleCreate() {
             :is_finished="todo.is_finished"
             :refresh="refresh"
           >
-          </user>
+          </todo>
         </ul>
       </div>
       <div v-else>何もありません</div>

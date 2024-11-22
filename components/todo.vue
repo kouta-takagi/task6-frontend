@@ -13,6 +13,7 @@ const props = defineProps<Props>();
 const isOpen = ref(false);
 
 const message = ref("");
+const flash = inject("flash");
 
 const updateFormData = reactive({
   title: props.title,
@@ -30,9 +31,9 @@ async function handleUpdate() {
   if (status.value === "success") {
     props.refresh();
     isOpen.value = !isOpen.value;
-    message.value = "Todoの編集が完了しました";
+    flash("Todoの編集が完了しました");
   } else {
-    message.value = "Todoの編集に失敗しました";
+    flash("Todoの編集に失敗しました");
   }
 }
 
@@ -50,7 +51,7 @@ async function handleToggleIsFinished() {
   );
   if (status.value === "success") {
     props.refresh();
-    // ここにemitでメッセージ入れる
+    flash("Todoのステータスを変更しました");
   }
 }
 
@@ -63,23 +64,13 @@ async function handleDelete() {
   );
   if (status.value === "success") {
     props.refresh();
+    flash("Todoを削除しました");
   }
 }
 </script>
 
 <template>
   <li>
-    <h3>{{ props.title }}</h3>
-    <p>{{ props.description }}</p>
-
-    <button v-on:click="handleToggleIsFinished">
-      {{ props.is_finished ? "未完了へ" : "完了" }}
-    </button>
-    <button v-on:click="handleDelete">削除</button>
-    <button v-on:click="handleToggleIsOpen">
-      {{ isOpen ? "編集をやめる" : "編集" }}
-    </button>
-    <div>{{ message }}</div>
     <form v-if="isOpen" v-on:submit.prevent="handleUpdate">
       <input
         type="text"
@@ -93,5 +84,18 @@ async function handleDelete() {
       ></textarea>
       <button type="submit">作成</button>
     </form>
+    <div v-else>
+      <h3>{{ props.title }}</h3>
+      <p>{{ props.description }}</p>
+    </div>
+
+    <button v-on:click="handleToggleIsFinished">
+      {{ props.is_finished ? "未完了へ" : "完了" }}
+    </button>
+    <button v-on:click="handleDelete">削除</button>
+    <button v-on:click="handleToggleIsOpen">
+      {{ isOpen ? "編集をやめる" : "編集" }}
+    </button>
+    <div>{{ message }}</div>
   </li>
 </template>
