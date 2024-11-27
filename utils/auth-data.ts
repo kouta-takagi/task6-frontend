@@ -23,6 +23,13 @@ export const setAuthDataFromResponse = (authData: AuthHeaders): void => {
     localStorage.setItem("expiry", authData.expiry);
     localStorage.setItem("uid", authData.uid);
     localStorage.setItem("content-type", authData["content-type"]);
+    const accessToken = useCookie("access-token");
+    const client = useCookie("client");
+    const uid = useCookie("uid");
+
+    accessToken.value = authData["access-token"];
+    client.value = authData.client;
+    uid.value = authData.uid;
   }
 };
 
