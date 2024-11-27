@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import type { Todo } from "@/types/todo";
 import type { User } from "@/types/user";
-
-definePageMeta({
-  middleware: ["check-login"],
-});
+import { logout } from "@/api/auth.js";
+import axios from "axios";
 
 const flash = inject("flash");
+const router = useRouter();
 
 // レスポンス用の型定義
 interface Data {
@@ -25,13 +24,25 @@ const message = ref("");
 
 // useFetch でデータを取得し、型を指定。
 const { data, refresh } = await useFetch<Data | null>(
-  `http://localhost:3000/users/1/todos`
+  `http://localhost:3000/users/1/todos`,
+  {
+    headers: {
+      "access-token": (localStorage.getItem("access-token") as string) || "",
+      client: (localStorage.getItem("client") as string) || "",
+      uid: (localStorage.getItem("uid") as string) || "",
+    },
+  }
 );
 
 async function handleCreate() {
   const { status } = await useFetch("http://localhost:3000/users/1/todos", {
     method: "POST",
     // ユーザーの情報はurlからとる
+    headers: {
+      "access-token": (localStorage.getItem("access-token") as string) || "",
+      client: (localStorage.getItem("client") as string) || "",
+      uid: (localStorage.getItem("uid") as string) || "",
+    },
     body: createFormData,
   });
   if (status.value === "success") {
@@ -41,6 +52,44 @@ async function handleCreate() {
     flash("Todoの作成に失敗しました");
   }
 }
+
+onMounted(() => {
+  const autoLogout = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/auth/validate_token",
+        {
+          headers: getAuthDataFromStorage(),
+        }
+      );
+      if (response.status !== 200) {
+        console.error(response);
+        flash("ログインしてください");
+        router.push({ path: "/login" });
+      } else {
+        console.log(response);
+      }
+    } catch (error) {
+      console.error(error);
+      flash("ログインしてください");
+      router.push({ path: "/login" });
+    }
+  };
+
+  autoLogout();
+});
+
+const handleLogout = async () => {
+  await logout().then((res) => {
+    if (res.status === 200) {
+      console.log(res);
+      flash("ログアウトしました");
+      router.push({ path: "/login" });
+    } else {
+      flash("ログアウトできませんでした");
+    }
+  });
+};
 </script>
 
 <template>
@@ -105,4 +154,5 @@ async function handleCreate() {
     />
     <button type="submit">作成</button>
   </form>
+  <button type="button" @click="handleLogout">ログアウト</button>
 </template>

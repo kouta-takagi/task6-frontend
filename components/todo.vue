@@ -25,6 +25,11 @@ async function handleUpdate() {
     `http://localhost:3000/users/1/todos/${props.id}`,
     {
       method: "PUT",
+      headers: {
+        "access-token": (localStorage.getItem("access-token") as string) || "",
+        client: (localStorage.getItem("client") as string) || "",
+        uid: (localStorage.getItem("uid") as string) || "",
+      },
       body: updateFormData,
     }
   );
@@ -46,6 +51,11 @@ async function handleToggleIsFinished() {
     `http://localhost:3000/users/1/todos/${props.id}`,
     {
       method: "PUT",
+      headers: {
+        "access-token": (localStorage.getItem("access-token") as string) || "",
+        client: (localStorage.getItem("client") as string) || "",
+        uid: (localStorage.getItem("uid") as string) || "",
+      },
       body: { is_finished: !props.is_finished },
     }
   );
@@ -60,6 +70,11 @@ async function handleDelete() {
     `http://localhost:3000/users/1/todos/${props.id}`,
     {
       method: "DELETE",
+      headers: {
+        "access-token": (localStorage.getItem("access-token") as string) || "",
+        client: (localStorage.getItem("client") as string) || "",
+        uid: (localStorage.getItem("uid") as string) || "",
+      },
     }
   );
   if (status.value === "success") {
