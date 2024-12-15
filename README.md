@@ -1,75 +1,21 @@
-# Nuxt Minimal Starter
+# 概要
+ユーザーがアカウントを作成し、ログインした後、自分専用のToDoリストを管理できるアプリケーション
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## テーブル設計
+### Usersテーブル
+- deviseで作成されたからカラム一式
+### Todosテーブル
+- **タイトル (title)**: 文字列
+- **詳細 (description)**: 文字列
+- **完了状況 (is_finished)**: 真偽値
+- **Usersテーブルの外部キー**
 
-## Setup
+## 機能
+- **ユーザー認証機能**:  
+  ユーザーは新規登録、ログイン、ログアウトができる。各ユーザーは自分のToDoリストのみ閲覧・操作できる。
+- **Todoリスト機能**:  
+  認証済みユーザーは、自分のToDoアイテムを作成、閲覧、編集、削除できる各ToDoアイテムにはタイトル、内容、完了状態が含まれる。
 
-Make sure to install dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## 使用技術
+- **フロントエンド**: Next.js3.14.159
+- **バックエンド**: Ruby3.3.4, Rails7.0.8
